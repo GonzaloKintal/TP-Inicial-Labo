@@ -1,8 +1,10 @@
-from generador_dataset.generador import generar_dataset
+from generador_dataset.generator import generate_dataset
+from generador_dataset.trainer import training_model
 
 def main():
     print("Dataset generado:")
-    print(generar_dataset())
+    df = generate_dataset()
+    training_model(df)
 
 if __name__ == "__main__":
     main()
