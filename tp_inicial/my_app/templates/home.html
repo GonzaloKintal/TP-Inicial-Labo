@@ -6,6 +6,9 @@
     <title>Sistema de Riesgo de Salud - ML</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         .risk-high {
             background-color: #fee2e2;
             color: #dc2626;
@@ -25,19 +28,26 @@
         .nav-link {
             position: relative;
         }
+
         .nav-link::after {
             content: '';
             position: absolute;
-            width: 0;
-            height: 2px;
+            left: 50%;
             bottom: -2px;
-            left: 0;
-            background-color: #93c5fd;
-            transition: width 0.3s;
-        }
-        .nav-link:hover::after {
             width: 100%;
+            height: 2px;
+            background-color: #93c5fd;
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s ease-in-out, left 0s 0.3s;
         }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+            left: 0;
+            transition: transform 0.3s ease-in-out, left 0s;
+        }
+
         .file-input-label {
             display: block;
             padding: 1.5rem;
@@ -51,8 +61,16 @@
             border-color: #3b82f6;
             background-color: #f8fafc;
         }
-    </style>
-    
+        .sticky-header th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #f9fafb;
+        }
+        .table-container {
+            position: relative;
+        }
+    </style>         
 </head>
 <body class="bg-gray-50 font-sans antialiased">
 
@@ -112,8 +130,8 @@
                         <h3 class="font-medium text-gray-800">Dataset Actual</h3>
                         <span class="text-sm text-gray-500">50 registros</span>
                     </div>
-                    <div class="overflow-x-auto max-h-96">
-                        <table class="min-w-full divide-y divide-gray-200" id="dataset-table">
+                    <div class="table-container overflow-x-auto max-h-96">
+                        <table class="sticky-header min-w-full divide-y divide-gray-200" id="dataset-table">
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
@@ -168,7 +186,7 @@
                     <div class="bg-white p-6 rounded-xl shadow-md">
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Entrenar Modelo</h3>
                         <p class="text-gray-600 mb-4">Entrena el modelo con el dataset actual.</p>
-                        <button id="train-model" class="w-full bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition duration-300" disabled>
+                        <button id="train-model" class="w-full bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition duration-300">
                             Entrenar Modelo
                         </button>
                     </div>
@@ -176,7 +194,7 @@
                     <div class="bg-white p-6 rounded-xl shadow-md">
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Evaluar Modelo</h3>
                         <p class="text-gray-600 mb-4">Mide el rendimiento del modelo entrenado.</p>
-                        <button id="evaluate-model" class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300" disabled>
+                        <button id="evaluate-model" class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300">
                             Evaluar Modelo
                         </button>
                     </div>
@@ -197,7 +215,7 @@
                 <div class="bg-white rounded-xl shadow-md overflow-hidden">
                     <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
                         <h3 class="font-medium text-gray-800">Resultados de Evaluación</h3>
-                        <button id="predict-all" class="bg-blue-600 text-white text-sm py-1 px-3 rounded hover:bg-blue-700 transition duration-300" disabled>
+                        <button id="predict-all" class="bg-blue-600 text-white text-base py-1 px-3 rounded hover:bg-blue-700 transition duration-300">
                             Evaluar Todo el Dataset
                         </button>
                     </div>
