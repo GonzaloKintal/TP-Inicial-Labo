@@ -1,5 +1,5 @@
 """
-URL configuration for frontEnd project.
+URL configuration for tp_inicial project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -19,5 +19,5 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-     path("", include("mi_app.urls")),
+     path("", include("my_app.urls")),
 ]

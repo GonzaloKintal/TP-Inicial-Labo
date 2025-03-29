@@ -32,7 +32,7 @@ def generate_dataset(seed=50, nro_empleados=200):
 
     file_name = "dataset_empleados.csv"
 
-    file_path = os.path.join("dataset", file_name)
+    file_path = os.path.join("tp_inicial/my_app/dataset", file_name)
  
     df.to_csv(file_path, index=False)
 

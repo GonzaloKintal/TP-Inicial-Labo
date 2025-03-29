@@ -81,14 +81,15 @@
                     <div class="w-20 h-1 bg-blue-500 mx-auto"></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                    <div class="bg-white p-6 rounded-xl shadow-md">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Generar Dataset Ficticio</h3>
-                        <p class="text-gray-600 mb-4">Crea un dataset de ejemplo con 50 empleados para probar el modelo.</p>
-                        <button id="generate-dataset" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
-                            Generar Dataset
-                        </button>
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Generar Dataset Ficticio</h3>
+                            <p class="text-gray-600 mb-4">Crea un dataset de ejemplo con 50 empleados para probar el modelo.</p>
+                            <form action="{% url 'generate_dataset' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" id="generate-dataset" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">Generar Dataset</button>
+                            </form>
+                        </div>
 
                     <div class="bg-white p-6 rounded-xl shadow-md">
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Cargar Dataset</h3>
@@ -123,11 +124,23 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Riesgo</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200" id="dataset-body">
-
-                                <tr>
-                                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">No hay datos disponibles. Genera o carga un dataset.</td>
-                                </tr>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% if dataset %}
+                                    {% for item in dataset %}
+                                        <tr>
+                                            <td class="px-6 py-4">{{ item.ID }}</td>
+                                            <td class="px-6 py-4">{{ item.Edad }}</td>
+                                            <td class="px-6 py-4">{{ item.Horas_Trabajadas_Por_Semana }}</td>
+                                            <td class="px-6 py-4">{{ item.Ausencias_Por_Enfermedad }}</td>
+                                            <td class="px-6 py-4">{{ item.Tipo_de_Trabajo }}</td>
+                                            <td class="px-6 py-4">{{ item.Riesgo }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">No hay datos disponibles. Genera un dataset.</td>
+                                    </tr>
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>
