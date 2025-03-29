@@ -28,3 +28,4 @@ def training_model(df) :
     print(f"Precisión del modelo: {precision:.2f}")
 
 
+# esto se va a tener que separar en funciones distintas para que tenga sentido lo propuesto en el html

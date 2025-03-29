@@ -130,7 +130,7 @@
                         <h3 class="font-medium text-gray-800">Dataset Actual</h3>
                         <span class="text-sm text-gray-500">50 registros</span>
                     </div>
-                    <div class="table-container overflow-x-auto max-h-96">
+                    <div class="table-container overflow-x-auto max-h-96">    
                         <table class="sticky-header min-w-full divide-y divide-gray-200" id="dataset-table">
                             <thead class="bg-gray-50">
                                 <tr>
@@ -150,8 +150,12 @@
                                             <td class="px-6 py-4">{{ item.Edad }}</td>
                                             <td class="px-6 py-4">{{ item.Horas_Trabajadas_Por_Semana }}</td>
                                             <td class="px-6 py-4">{{ item.Ausencias_Por_Enfermedad }}</td>
-                                            <td class="px-6 py-4">{{ item.Tipo_de_Trabajo }}</td>
-                                            <td class="px-6 py-4">{{ item.Riesgo }}</td>
+                                            <td class="px-6 py-4 {% if item.Tipo_de_Trabajo == 'Físico' %}physical-work{% else %}office-work{% endif %}">
+                                                {{ item.Tipo_de_Trabajo }}
+                                            </td>
+                                            <td class="px-6 py-4 {% if item.Riesgo == 1 %}risk-high{% else %}risk-low{% endif %}">
+                                                {% if item.Riesgo == 1 %}Alto Riesgo{% else %}Bajo Riesgo{% endif %}
+                                            </td>
                                         </tr>
                                     {% endfor %}
                                 {% else %}
@@ -200,7 +204,17 @@
                     </div>
                 </div>
 
- <!-- ACA IRIA LA PARTE DONDE SE CARGAN LOS RESULTADOS DEL MODELO SEGUN PRECISION Y ESO-->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hidden" id="model-results">
+                    <div class="p-4 bg-gray-50 border-b">
+                        <h3 class="font-medium text-gray-800">Resultados del Modelo</h3>
+                    </div>
+                    <div class="p-6">               
+                            <div class="bg-gray-100 p-4 rounded-lg text-center">
+                                <p class="text-3xl font-bold text-blue-600">-</p>
+                                <p class="text-sm text-gray-600">Accuracy</p>
+                            </div>                       
+                    </div>
+                </div>
 
             </div>
         </section>

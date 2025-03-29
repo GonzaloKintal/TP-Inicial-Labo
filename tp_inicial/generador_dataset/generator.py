@@ -20,6 +20,7 @@ def generate_dataset(seed=50, nro_empleados=200):
 
 
     df = pd.DataFrame({
+        'ID': range(1, nro_empleados + 1),
         'Horas_Trabajadas_Por_Semana': horas_trabajadas,
         'Ausencias_Por_Enfermedad': ausencias,
         'Edad': edad,
