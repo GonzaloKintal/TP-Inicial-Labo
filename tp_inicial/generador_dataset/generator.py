@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
+from django.conf import settings
 
 def assign_risk(horas, ausencias):
     if horas > 55 or ausencias > 5:
@@ -32,8 +33,8 @@ def generate_dataset(seed=50, nro_empleados=200):
 
     file_name = "dataset_empleados.csv"
 
-    file_path = os.path.join("tp_inicial/my_app/dataset", file_name)
- 
+    file_path = os.path.join(settings.BASE_DIR, 'my_app', 'dataset', file_name)
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
     df.to_csv(file_path, index=False)
 
     return df
