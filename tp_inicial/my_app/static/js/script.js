@@ -74,6 +74,7 @@ function updateDatasetTable(dataset) {
                 <td class="px-6 py-4 text-center">${item.Edad}</td>
                 <td class="px-6 py-4 text-center">${item.Horas_Trabajadas_Por_Semana}</td>
                 <td class="px-6 py-4 text-center">${item.Ausencias_Por_Enfermedad}</td>
+                <td class="px-6 py-4 text-center">${item.Nivel_de_Estres}</td>
                 <td class="px-6 py-4 text-center ${workClass}">${item.Tipo_de_Trabajo}</td>
                 <td class="px-6 py-4 text-center ${riskClass}">${riskText}</td>
             `;
@@ -127,7 +128,7 @@ document.getElementById('train_model').addEventListener('click', function(event)
         loader.classList.add('hidden');
         precisionValue.classList.remove('hidden');
         precisionText.classList.remove('hidden');
-        precisionValue.innerText = data.precision;
+       precisionValue.innerText = `${data.precision}%`;
     })
     .catch(error => {
         console.error('Error:', error);

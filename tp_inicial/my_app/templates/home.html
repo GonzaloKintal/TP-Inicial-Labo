@@ -152,6 +152,7 @@
                                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Edad</th>
                                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Horas/Sem</th>
                                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ausencias</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Nivel de Estres</th>
                                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Trabajo</th>
                                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Riesgo</th>
                                 </tr>
@@ -164,6 +165,7 @@
                                             <td class="px-6 py-4 text-center">{{ item.Edad }}</td>
                                             <td class="px-6 py-4 text-center">{{ item.Horas_Trabajadas_Por_Semana }}</td>
                                             <td class="px-6 py-4 text-center">{{ item.Ausencias_Por_Enfermedad }}</td>
+                                            <td class="px-6 py-4 text-center">{{ item.Nivel_de_Estres }}</td>
                                             <td class="px-6 py-4 text-center {% if item.Tipo_de_Trabajo == 'Físico' %}physical-work{% else %}office-work{% endif %}">
                                                 {{ item.Tipo_de_Trabajo }}
                                             </td>
@@ -251,6 +253,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Horas/Sem</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ausencias</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trabajo</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nivel_de_Estres</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Riesgo</th>
                                 </tr>
                             </thead>

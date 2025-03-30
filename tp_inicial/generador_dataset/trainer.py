@@ -4,6 +4,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from django.conf import settings
+from sklearn.preprocessing import StandardScaler
 import os
 
 
@@ -15,6 +16,9 @@ def training_model(df):
 
     # Convertimos "Tipo_de_Trabajo" en variables dummy (0 o 1)
     X = pd.get_dummies(X, drop_first=True)
+
+    scaler = StandardScaler()
+    X = scaler.fit_transform(X)
 
     # Dividimos en conjunto de entrenamiento y prueba (80%-20%)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -37,7 +41,7 @@ def training_model(df):
     resultados.to_csv(file_path, index=False)
     print("Resultados guardados en 'resultados_modelo.csv'.")
 
-    return precision  # Devolvemos el modelo entrenado
+    return precision * 100 # Devolvemos el modelo entrenado
 
 
 # esto se va a tener que separar en funciones distintas para que tenga sentido lo propuesto en el html
