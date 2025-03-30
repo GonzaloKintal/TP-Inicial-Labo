@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -70,6 +72,12 @@
         .table-container {
             position: relative;
         }
+        .disabled\:opacity-50:disabled {
+            opacity: 0.5;
+        }
+        .disabled\:cursor-not-allowed:disabled {
+            cursor: not-allowed;
+        }
     </style>         
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -103,9 +111,15 @@
                         <div class="bg-white p-6 rounded-xl shadow-md">
                             <h3 class="text-xl font-semibold text-gray-800 mb-4">Generar Dataset Ficticio</h3>
                             <p class="text-gray-600 mb-4">Crea un dataset de ejemplo con 50 empleados para probar el modelo.</p>
-                            <form action="{% url 'generate_dataset' %}" method="post">
+                            <!-- <form action="{% url 'generate_dataset' %}" method="post">
                                 {% csrf_token %}
                                 <button type="submit" id="generate-dataset" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">Generar Dataset</button>
+                            </form> -->
+                            <form id="generate-form">
+                                {% csrf_token %}
+                                <button type="button" id="generate-dataset" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
+                                    Generar Dataset
+                                </button>
                             </form>
                         </div>
 
@@ -134,26 +148,26 @@
                         <table class="sticky-header min-w-full divide-y divide-gray-200" id="dataset-table">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Edad</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Horas/Sem</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ausencias</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trabajo</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Riesgo</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Edad</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Horas/Sem</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ausencias</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Trabajo</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Riesgo</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 {% if dataset %}
                                     {% for item in dataset %}
                                         <tr>
-                                            <td class="px-6 py-4">{{ item.ID }}</td>
-                                            <td class="px-6 py-4">{{ item.Edad }}</td>
-                                            <td class="px-6 py-4">{{ item.Horas_Trabajadas_Por_Semana }}</td>
-                                            <td class="px-6 py-4">{{ item.Ausencias_Por_Enfermedad }}</td>
-                                            <td class="px-6 py-4 {% if item.Tipo_de_Trabajo == 'Físico' %}physical-work{% else %}office-work{% endif %}">
+                                            <td class="px-6 py-4 text-center">{{ item.ID }}</td>
+                                            <td class="px-6 py-4 text-center">{{ item.Edad }}</td>
+                                            <td class="px-6 py-4 text-center">{{ item.Horas_Trabajadas_Por_Semana }}</td>
+                                            <td class="px-6 py-4 text-center">{{ item.Ausencias_Por_Enfermedad }}</td>
+                                            <td class="px-6 py-4 text-center {% if item.Tipo_de_Trabajo == 'Físico' %}physical-work{% else %}office-work{% endif %}">
                                                 {{ item.Tipo_de_Trabajo }}
                                             </td>
-                                            <td class="px-6 py-4 {% if item.Riesgo == 1 %}risk-high{% else %}risk-low{% endif %}">
+                                            <td class="px-6 py-4 text-center {% if item.Riesgo == 1 %}risk-high{% else %}risk-low{% endif %}">
                                                 {% if item.Riesgo == 1 %}Alto Riesgo{% else %}Bajo Riesgo{% endif %}
                                             </td>
                                         </tr>
@@ -178,44 +192,39 @@
                     <div class="w-20 h-1 bg-blue-500 mx-auto"></div>
                 </div>
         
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white p-6 rounded-xl shadow-md flex flex-col h-full">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Crear Modelo</h3>
-                        <p class="text-gray-600 mb-4 flex-grow">Inicializa un nuevo modelo de regresión logística.</p>
-                        <button id="create-model" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300 mt-auto">
-                            Crear Modelo
-                        </button>
-                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-6 mb-8">
         
-                    <div class="bg-white p-6 rounded-xl shadow-md flex flex-col h-full">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Entrenar Modelo</h3>
-                        <p class="text-gray-600 mb-4 flex-grow">Entrena el modelo con el dataset actual.</p>
-                        <button id="train-model" class="w-full bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition duration-300 mt-auto">
-                            Entrenar Modelo
-                        </button>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex flex-col h-full text-center">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Entrenar y Evaluar Modelo</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Entrena y evalúa el modelo con el dataset actual.</p>
+                        <form action="{% url 'train_model' %}" method="post" class="flex justify-center">
+                            {% csrf_token %}
+                            <button type="submit" id="train_model" class="bg-gray-400 text-white py-2.5 px-6 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm" disabled>
+                                Entrenar Modelo
+                            </button>
+                        </form>
                     </div>
-        
-                    <div class="bg-white p-6 rounded-xl shadow-md flex flex-col h-full">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Evaluar Modelo</h3>
-                        <p class="text-gray-600 mb-4 flex-grow">Mide el rendimiento del modelo entrenado.</p>
-                        <button id="evaluate-model" class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition duration-300 mt-auto">
-                            Evaluar Modelo
-                        </button>
-                    </div>
+    
                 </div>
 
-                <div class="bg-white rounded-xl shadow-md overflow-hidden hidden" id="model-results">
-                    <div class="p-4 bg-gray-50 border-b">
-                        <h3 class="font-medium text-gray-800">Resultados del Modelo</h3>
-                    </div>
-                    <div class="p-6">               
-                            <div class="bg-gray-100 p-4 rounded-lg text-center">
-                                <p class="text-3xl font-bold text-blue-600">-</p>
-                                <p class="text-sm text-gray-600">Accuracy</p>
-                            </div>                       
-                    </div>
+            </div>
+            <div class="max-w-6xl mx-auto">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Precisión del Modelo</h3>
+                    <div class="bg-gray-100 p-4 rounded-lg text-center">
+                        <!-- Loader (inicialmente oculto) -->
+                        <div id="precision-loader" class="hidden flex justify-center items-center py-4">
+                            <svg class="animate-spin -ml-1 mr-3 h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span class="text-gray-600">Entrenando modelo...</span>
+                        </div>
+                        <!-- Resultado -->
+                        <p id="precision-value" class="text-3xl font-bold text-blue-600">{% if precision %}{{ precision }}{% else %}-{% endif %}</p>
+                        <p class="text-sm text-gray-600">Precisión del modelo entrenado.</p>
+                    </div> 
                 </div>
-
             </div>
         </section>
 
@@ -281,3 +290,12 @@
     </footer>
 </body>
 </html>
+
+<script>
+    const DJANGO_CONFIG = {
+        generateDatasetUrl: "{% url 'generate_dataset' %}",
+        trainModelUrl: "{% url 'train_model' %}",
+        csrfToken: "{{ csrf_token }}"
+    };
+</script>
+<script src="{% static 'js/script.js' %}"></script>

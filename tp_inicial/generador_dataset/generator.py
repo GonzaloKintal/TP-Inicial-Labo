@@ -30,11 +30,11 @@ def generate_dataset(seed=50, nro_empleados=200):
 
     df["Riesgo"] = df["Riesgo"].map({"Alto Riesgo": 1, "Bajo Riesgo": 0})
     
-    df = df.sort_values(by=['Riesgo'])
+    # df = df.sort_values(by=['Riesgo'])
 
     file_name = "dataset_empleados.csv"
 
-    file_path = os.path.join(settings.BASE_DIR, 'my_app', 'dataset', file_name)
+    file_path = os.path.join(settings.FILE_PATH, file_name)
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
     df.to_csv(file_path, index=False)
 
