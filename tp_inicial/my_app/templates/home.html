@@ -78,7 +78,7 @@
         .disabled\:cursor-not-allowed:disabled {
             cursor: not-allowed;
         }
-    </style>         
+    </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
 
@@ -98,9 +98,9 @@
         </div>
     </nav>
 
-    <div class="pt-24 pb-12">
+    <div class="pt-24">
 
-        <section id="dataset" class="py-16 px-6">
+        <section id="dataset" class="pt-14">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold text-gray-800 mb-2">Dataset de Empleados</h2>
@@ -111,10 +111,6 @@
                         <div class="bg-white p-6 rounded-xl shadow-md">
                             <h3 class="text-xl font-semibold text-gray-800 mb-4">Generar Dataset Ficticio</h3>
                             <p class="text-gray-600 mb-4">Crea un dataset de ejemplo con 50 empleados para probar el modelo.</p>
-                            <!-- <form action="{% url 'generate_dataset' %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" id="generate-dataset" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">Generar Dataset</button>
-                            </form> -->
                             <form id="generate-form">
                                 {% csrf_token %}
                                 <button type="button" id="generate-dataset" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
@@ -138,23 +134,36 @@
                         </label>
                     </div>
                 </div>
-
                 <div class="bg-white rounded-xl shadow-md overflow-hidden">
                     <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
                         <h3 class="font-medium text-gray-800">Dataset Actual</h3>
                         <span class="text-sm text-gray-500">50 registros</span>
                     </div>
-                    <div class="table-container overflow-x-auto max-h-96">    
+                    <div class="table-container overflow-x-auto max-h-96">
                         <table class="sticky-header min-w-full divide-y divide-gray-200" id="dataset-table">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Edad</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Horas/Sem</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ausencias</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Nivel de Estres</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Trabajo</th>
-                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Riesgo</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <a href="#" class="sortable-header" data-column="0">ID</a>
+                                    </th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <a href="#" class="sortable-header" data-column="1">Edad</a>
+                                    </th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <a href="#" class="sortable-header" data-column="2">Horas/Sem</a>
+                                    </th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <a href="#" class="sortable-header" data-column="3">Ausencias</a>
+                                    </th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <a href="#" class="sortable-header" data-column="4">Nivel de Estres</a>
+                                    </th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <a href="#" class="sortable-header" data-column="5">Trabajo</a>
+                                    </th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <a href="#" class="sortable-header" data-column="6">Riesgo</a>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -176,15 +185,14 @@
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">No hay datos disponibles. Genera un dataset.</td>
+                                        <td colspan="7" class="px-6 py-4 text-center text-gray-500">No hay datos disponibles. Genera un dataset.</td>
                                     </tr>
                                 {% endif %}
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
-        </section>
+                
 
 
         <section id="modelo" class="py-16 px-6 bg-gray-50">
@@ -201,7 +209,7 @@
                         <p class="text-gray-600 mb-4 flex-grow">Entrena y evalúa el modelo con el dataset actual.</p>
                         <form action="{% url 'train_model' %}" method="post" class="flex justify-center">
                             {% csrf_token %}
-                            <button type="submit" id="train_model" class="bg-gray-400 text-white py-2.5 px-6 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm" disabled>
+                            <button type="submit" id="train_model" class="bg-gray-400 text-white py-2.5 px-6 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-base" disabled>
                                 Entrenar Modelo
                             </button>
                         </form>
@@ -230,9 +238,9 @@
             </div>
         </section>
 
-        <section id="evaluar" class="py-16 px-6">
+        <section id="evaluar" class="pb-24 px-6">
             <div class="max-w-6xl mx-auto">
-                <div class="text-center mb-12">
+                <div class="text-center mb-8">
                     <h2 class="text-3xl font-bold text-gray-800 mb-2">Evaluar Empleados</h2>
                     <div class="w-20 h-1 bg-blue-500 mx-auto"></div>
                 </div>
