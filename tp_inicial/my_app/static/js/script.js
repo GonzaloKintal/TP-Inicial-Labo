@@ -13,7 +13,7 @@ document.getElementById('generate-dataset').addEventListener('click', function(e
     generateBtn.innerHTML = '<span class="flex items-center justify-center"><svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generando dataset...</span>';
     
     // Crear una promesa que se resuelve después de 2 segundos
-    const minimumLoadTime = new Promise(resolve => setTimeout(resolve, 2000));
+    const minimumLoadTime = new Promise(resolve => setTimeout(resolve, 3000));
     
     // Combinar con la petición fetch
     Promise.all([
@@ -105,7 +105,7 @@ document.getElementById('train_model').addEventListener('click', function(event)
     precisionValue.classList.add('hidden');
     precisionText.classList.add('hidden');
     
-    const minimumLoadTime = new Promise(resolve => setTimeout(resolve, 2000));
+    const minimumLoadTime = new Promise(resolve => setTimeout(resolve, 3000));
     
     Promise.all([
         fetch(DJANGO_CONFIG.trainModelUrl, {
@@ -157,38 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 let ordenAscendente = [true, true, true, true, true, true, true];  // Mantiene el estado de cada columna (ascendente o descendente)
 
-// function ordenarPorColumna(event, columnaIndex) {
-//     event.preventDefault();  // Prevenir que la página se desplace hacia arriba
 
-//     const tabla = document.querySelector("#dataset-table tbody");
-//     const filas = Array.from(tabla.rows);
-
-//     // Ordenar las filas
-//     filas.sort(function(a, b) {
-//         const celdaA = a.cells[columnaIndex].textContent.trim();
-//         const celdaB = b.cells[columnaIndex].textContent.trim();
-
-//         if (columnaIndex === 1 || columnaIndex === 2 || columnaIndex === 3 || columnaIndex === 4) {
-//             // Si son números (Edad, Horas, Ausencias, Estres), convertimos a números
-//             return ordenAscendente[columnaIndex]
-//                 ? parseFloat(celdaA) - parseFloat(celdaB)
-//                 : parseFloat(celdaB) - parseFloat(celdaA);
-//         } else {
-//             // Si son cadenas (Tipo de trabajo, Riesgo), los comparamos como texto
-//             return ordenAscendente[columnaIndex]
-//                 ? celdaA.localeCompare(celdaB)
-//                 : celdaB.localeCompare(celdaA);
-//         }
-//     });
-
-//     // Insertamos las filas ordenadas
-//     filas.forEach(function(fila) {
-//         tabla.appendChild(fila);
-//     });
-
-//     // Alternamos el estado de la columna (ascendente/descendente)
-//     ordenAscendente[columnaIndex] = !ordenAscendente[columnaIndex];
-// }
 function ordenarPorColumna(event, columnaIndex) {
     event.preventDefault();
     
