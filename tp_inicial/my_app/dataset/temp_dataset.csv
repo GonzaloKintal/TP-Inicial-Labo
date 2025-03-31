@@ -1,0 +1,11 @@
+ID,Horas_Trabajadas_Por_Semana,Ausencias_Por_Enfermedad,Nivel_de_Estres,Edad,Tipo_de_Trabajo
+1,40,0,1,58,Oficina
+2,33,1,4,35,Físico
+3,35,0,8,26,Oficina
+4,46,0,2,29,Oficina
+5,41,2,3,33,Físico
+6,30,3,2,61,Oficina
+7,33,5,10,56,Oficina
+8,36,3,8,23,Físico
+9,59,0,9,63,Físico
+10,33,4,4,40,Físico
