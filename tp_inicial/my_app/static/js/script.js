@@ -210,3 +210,137 @@ function actualizarIndicadoresOrden(columnaIndex) {
         headerActual.innerHTML = textoOriginal + flecha;
     }
 }
+
+
+// Manejo de la carga de archivos
+document.addEventListener('DOMContentLoaded', function() {
+    const fileUpload = document.getElementById('file-upload');
+    const fileName = document.getElementById('file-name');
+    const uploadButton = document.getElementById('upload-button');
+    const uploadForm = document.getElementById('upload-form');
+    const uploadStatus = document.getElementById('upload-status');
+    
+    fileUpload.addEventListener('change', function(e) {
+        if (this.files && this.files.length > 0) {
+            fileName.textContent = this.files[0].name;
+            uploadButton.disabled = false;
+        } else {
+            fileName.textContent = 'Seleccionar archivo';
+            uploadButton.disabled = true;
+        }
+    });
+    
+    uploadForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!fileUpload.files || fileUpload.files.length === 0) {
+            uploadStatus.classList.remove('hidden');
+            uploadStatus.textContent = 'Por favor selecciona un archivo';
+            uploadStatus.className = 'mt-2 text-sm text-center text-red-600';
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append('file', fileUpload.files[0]);
+        formData.append('csrfmiddlewaretoken', DJANGO_CONFIG.csrfToken);
+        
+        uploadButton.disabled = true;
+        uploadStatus.classList.remove('hidden');
+        uploadStatus.textContent = 'Procesando archivo...';
+        uploadStatus.className = 'mt-2 text-sm text-center text-blue-600';
+        
+        fetch('/upload_dataset/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                uploadStatus.textContent = 'Archivo procesado correctamente! Actualizando datos...';
+                uploadStatus.className = 'mt-2 text-sm text-center text-green-600';
+                
+                // Habilitar el botón de entrenar modelo
+                const trainModelBtn = document.getElementById('train_model');
+                trainModelBtn.disabled = false;
+                trainModelBtn.classList.remove('bg-gray-400');
+                trainModelBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                
+                // Actualizar la tabla con los nuevos datos
+                updateDatasetTable(data.dataset);
+            
+            } else {
+                throw new Error(data.error || 'Error desconocido al procesar el archivo');
+            }
+        })
+        .catch(error => {
+            console.error('Error en la carga:', error);
+            uploadStatus.textContent = 'Error: ' + error.message;
+            uploadStatus.className = 'mt-2 text-sm text-center text-red-600';
+        })
+        .finally(() => {
+            uploadButton.disabled = false;
+        });
+    });
+});
+
+
+function updateDatasetTable(dataset) {
+    const tbody = document.querySelector('#dataset-table tbody');
+    tbody.innerHTML = '';
+    
+    if (dataset && dataset.length > 0) {
+        dataset.forEach(item => {
+            const row = document.createElement('tr');
+            
+            // Valores por defecto para campos vacíos
+            const id = item.ID ?? 'N/A';
+            const age = item.Edad ?? 'N/A';
+            const hours = item.Horas_Trabajadas_Por_Semana ?? 'N/A';
+            const absences = item.Ausencias_Por_Enfermedad ?? 'N/A';
+            const stress = item.Nivel_de_Estres ?? 'N/A';
+            
+            // Validar tipo de trabajo
+            let workType = item.Tipo_de_Trabajo;
+            if (!workType || (workType !== 'Físico' && workType !== 'Oficina')) {
+                workType = 'Desconocido';
+            }
+            
+            // Validar riesgo (0 o 1)
+            let riskValue = item.Riesgo;
+            if (riskValue !== 0 && riskValue !== 1) {
+                riskValue = 0;  // Valor por defecto: bajo riesgo
+            }
+            
+            // Clases CSS según los valores
+            const workClass = workType === 'Físico' ? 'physical-work' : 'office-work';
+            const riskClass = riskValue === 1 ? 'risk-high' : 'risk-low';
+            const riskText = riskValue === 1 ? 'Alto Riesgo' : 'Bajo Riesgo';
+            
+            row.innerHTML = `
+                <td class="px-6 py-4 text-center">${id}</td>
+                <td class="px-6 py-4 text-center">${age}</td>
+                <td class="px-6 py-4 text-center">${hours}</td>
+                <td class="px-6 py-4 text-center">${absences}</td>
+                <td class="px-6 py-4 text-center">${stress}</td>
+                <td class="px-6 py-4 text-center ${workClass}">${workType}</td>
+                <td class="px-6 py-4 text-center ${riskClass}">${riskText}</td>
+            `;
+            
+            tbody.appendChild(row);
+        });
+    } else {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="px-6 py-4 text-center text-gray-500">No hay datos disponibles</td>
+            </tr>
+        `;
+    }
+}
