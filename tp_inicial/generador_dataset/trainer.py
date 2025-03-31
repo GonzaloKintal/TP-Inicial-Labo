@@ -14,7 +14,7 @@ def training_model(df):
     df_prueba=df
 
     # Separamos datos en variables independientes (X) y objetivo (y)
-    X = df[["Horas_Trabajadas_Por_Semana", "Ausencias_Por_Enfermedad", "Edad", "Tipo_de_Trabajo"]]
+    X = df[["Horas_Trabajadas_Por_Semana", "Ausencias_Por_Enfermedad","Nivel_de_Estres", "Edad", "Tipo_de_Trabajo"]]
     y = df["Riesgo"]
 
     # Convertimos "Tipo_de_Trabajo" en variables dummy (0 o 1)
@@ -47,27 +47,38 @@ def training_model(df):
     model_path = os.path.join(settings.FILE_PATH, "modelo_riesgo.joblib")
     scaler_path = os.path.join(settings.FILE_PATH, "scaler_riesgo.joblib")
 
-    # joblib.dump(model, model_path)
-    # joblib.dump(scaler, scaler_path)
+    joblib.dump(model, model_path)
+    joblib.dump(scaler, scaler_path)
+
+    predecir_riesgo()
 
     
     return precision * 100 # Devolvemos el modelo entrenado
 
-#Este metodo va a servir para usar el modelo entrenado
 
-# def predecir_riesgo():
-#     file_path = os.path.join(settings.BASE_DIR, 'my_app', 'dataset', 'data_prueba.csv')
-#     nuevos_datos = pd.read_csv(file_path)
+
+def predecir_riesgo():
+
+    file_path = os.path.join(settings.BASE_DIR, 'my_app', 'dataset', 'data_prueba.csv')
+    nuevos_datos = pd.read_csv(file_path)
+
+    nuevos_datos= nuevos_datos[["Horas_Trabajadas_Por_Semana", "Ausencias_Por_Enfermedad","Nivel_de_Estres", "Edad", "Tipo_de_Trabajo"]]
    
-#     model_path = os.path.join(settings.FILE_PATH, "modelo_riesgo.joblib")
-#     scaler_path = os.path.join(settings.FILE_PATH, "scaler_riesgo.joblib")
+    model_path = os.path.join(settings.FILE_PATH, "modelo_riesgo.joblib")
+    scaler_path = os.path.join(settings.FILE_PATH, "scaler_riesgo.joblib")
     
-#     model = joblib.load(model_path)
-#     scaler = joblib.load(scaler_path)
+    model = joblib.load(model_path)
+    scaler = joblib.load(scaler_path)
     
-#     nuevos_datos = pd.get_dummies(nuevos_datos, drop_first=True)
-#     nuevos_datos_scaled = scaler.transform(nuevos_datos)
+    nuevos_datos = pd.get_dummies(nuevos_datos, drop_first=True)
+    nuevos_datos_scaled = scaler.transform(nuevos_datos)
 
-#     prediccion = model.predict(nuevos_datos_scaled)
-#     print(prediccion)
-#     return prediccion
+    prediccion = model.predict(nuevos_datos_scaled)
+
+    nuevos_datos["Riesgo"] = prediccion
+
+    file_path = os.path.join(settings.BASE_DIR, 'my_app', 'dataset', 'prediccion.csv')
+    nuevos_datos.to_csv(file_path, index=False)  
+
+
+    return prediccion
