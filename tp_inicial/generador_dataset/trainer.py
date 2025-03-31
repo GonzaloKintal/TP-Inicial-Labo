@@ -6,9 +6,12 @@ from sklearn.metrics import accuracy_score
 from django.conf import settings
 from sklearn.preprocessing import StandardScaler
 import os
+import joblib  # 
 
 
 def training_model(df):
+
+    df_prueba=df
 
     # Separamos datos en variables independientes (X) y objetivo (y)
     X = df[["Horas_Trabajadas_Por_Semana", "Ausencias_Por_Enfermedad", "Edad", "Tipo_de_Trabajo"]]
@@ -41,4 +44,30 @@ def training_model(df):
     resultados.to_csv(file_path, index=False)
     print("Resultados guardados en 'resultados_modelo.csv'.")
 
+    model_path = os.path.join(settings.FILE_PATH, "modelo_riesgo.joblib")
+    scaler_path = os.path.join(settings.FILE_PATH, "scaler_riesgo.joblib")
+
+    # joblib.dump(model, model_path)
+    # joblib.dump(scaler, scaler_path)
+
+    
     return precision * 100 # Devolvemos el modelo entrenado
+
+#Este metodo va a servir para usar el modelo entrenado
+
+# def predecir_riesgo():
+#     file_path = os.path.join(settings.BASE_DIR, 'my_app', 'dataset', 'data_prueba.csv')
+#     nuevos_datos = pd.read_csv(file_path)
+   
+#     model_path = os.path.join(settings.FILE_PATH, "modelo_riesgo.joblib")
+#     scaler_path = os.path.join(settings.FILE_PATH, "scaler_riesgo.joblib")
+    
+#     model = joblib.load(model_path)
+#     scaler = joblib.load(scaler_path)
+    
+#     nuevos_datos = pd.get_dummies(nuevos_datos, drop_first=True)
+#     nuevos_datos_scaled = scaler.transform(nuevos_datos)
+
+#     prediccion = model.predict(nuevos_datos_scaled)
+#     print(prediccion)
+#     return prediccion
