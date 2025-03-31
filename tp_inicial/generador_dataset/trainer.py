@@ -42,6 +42,3 @@ def training_model(df):
     print("Resultados guardados en 'resultados_modelo.csv'.")
 
     return precision * 100 # Devolvemos el modelo entrenado
-
-
-# esto se va a tener que separar en funciones distintas para que tenga sentido lo propuesto en el html
