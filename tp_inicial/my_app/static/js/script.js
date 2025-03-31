@@ -218,7 +218,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileName = document.getElementById('file-name');
     const uploadButton = document.getElementById('upload-button');
     const uploadForm = document.getElementById('upload-form');
-    const uploadStatus = document.getElementById('upload-status');
     
     fileUpload.addEventListener('change', function(e) {
         if (this.files && this.files.length > 0) {
@@ -233,13 +232,6 @@ document.addEventListener('DOMContentLoaded', function() {
     uploadForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        if (!fileUpload.files || fileUpload.files.length === 0) {
-            uploadStatus.classList.remove('hidden');
-            uploadStatus.textContent = 'Por favor selecciona un archivo';
-            uploadStatus.className = 'mt-2 text-sm text-center text-red-600';
-            return;
-        }
-        
         // Mostrar loader en el botón
         const originalText = uploadButton.textContent;
         uploadButton.disabled = true;
@@ -252,10 +244,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 Cargando...
             </span>
         `;
-        
-        uploadStatus.classList.remove('hidden');
-        uploadStatus.textContent = 'Procesando archivo...';
-        uploadStatus.className = 'mt-2 text-sm text-center text-blue-600';
         
         // Esperar 2 segundos antes de continuar
         setTimeout(() => {
@@ -277,9 +265,6 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 if (data.success) {
-                    uploadStatus.textContent = 'Archivo procesado correctamente! Actualizando datos...';
-                    uploadStatus.className = 'mt-2 text-sm text-center text-green-600';
-                    
                     // Ahora cargar los datos del archivo
                     return fetch('/load_evaluation_data/', {
                         method: 'POST',
@@ -314,8 +299,6 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error en la carga:', error);
-                uploadStatus.textContent = 'Error: ' + error.message;
-                uploadStatus.className = 'mt-2 text-sm text-center text-red-600';
             })
             .finally(() => {
                 uploadButton.disabled = false;
@@ -445,9 +428,11 @@ loadEvaluateBtn.addEventListener('click', function(e) {
     
     // Esperar 2 segundos antes de continuar
     setTimeout(() => {
+        const file = evaluateFileUpload.files[0];
         const formData = new FormData();
-        formData.append('evaluate_file', evaluateFileUpload.files[0]);
+        formData.append('evaluate_file', file);
         
+        // 1. Primero subir el archivo al servidor
         fetch('/upload_dataset/', {
             method: 'POST',
             body: formData,
@@ -463,9 +448,14 @@ loadEvaluateBtn.addEventListener('click', function(e) {
         })
         .then(data => {
             if (data.success) {
-                // Ahora cargar los datos del archivo
+                // 2. Crear NUEVO FormData para la segunda petición
+                const evaluationFormData = new FormData();
+                evaluationFormData.append('evaluate_file', file);
+                
+                // 3. Cargar los datos del archivo (incluyendo el archivo nuevamente)
                 return fetch('/load_evaluation_data/', {
                     method: 'POST',
+                    body: evaluationFormData,
                     headers: {
                         'X-CSRFToken': DJANGO_CONFIG.csrfToken,
                     },
@@ -485,17 +475,22 @@ loadEvaluateBtn.addEventListener('click', function(e) {
                 evaluationData = data.dataset;
                 updateEvaluationResultsTable(data.dataset, false);
                 evaluateButton.disabled = false;
+                
+                // Mostrar mensaje de éxito
+                const statusDiv = document.getElementById('evaluate-status');
+                statusDiv.textContent = 'Dataset cargado correctamente';
+                statusDiv.className = 'mt-2 text-sm text-center text-green-600';
+                statusDiv.classList.remove('hidden');
             } else {
                 throw new Error(data.error || 'Error desconocido al cargar los datos');
             }
         })
         .catch(error => {
             console.error('Error al cargar dataset:', error);
-            // Mostrar mensaje de error al usuario
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4';
-            errorDiv.textContent = 'Error al cargar el dataset: ' + error.message;
-            document.querySelector('#evaluar .max-w-6xl').prepend(errorDiv);
+            const statusDiv = document.getElementById('evaluate-status');
+            statusDiv.textContent = 'Error al cargar el dataset: ' + error.message;
+            statusDiv.className = 'mt-2 text-sm text-center text-red-600';
+            statusDiv.classList.remove('hidden');
         })
         .finally(() => {
             restoreButton(loadEvaluateBtn, loadEvaluateBtnOriginalText);

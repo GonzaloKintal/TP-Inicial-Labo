@@ -1,0 +1,79 @@
+<section id="evaluar" class="pb-24 px-6">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Evaluar Empleados</h2>
+            <div class="w-20 h-1 bg-blue-500 mx-auto"></div>
+        </div>
+
+        <!-- Sección para cargar archivo sin clasificar -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+            <div class="p-4 bg-gray-50 border-b">
+                <h3 class="font-medium text-gray-800">Cargar Empleados para Evaluar</h3>
+                <p class="text-sm text-gray-500 mt-1">Sube un archivo con datos de empleados (sin columna de Riesgo)</p>
+            </div>
+            <div class="p-6">
+                <form id="evaluate-form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="evaluate-file" class="file-input-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            <span id="evaluate-file-name" class="text-blue-600 font-medium">Seleccionar archivo</span>
+                            <span class="block text-sm text-gray-500">Formatos soportados: .xlsx, .csv (sin columna "Riesgo")</span>
+                            <input id="evaluate-file" name="evaluate_file" type="file" accept=".xlsx,.csv" class="hidden" required>
+                        </label>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" id="load-evaluate-data" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            Cargar Dataset
+                        </button>
+                        <button type="submit" id="evaluate-button" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            Evaluar Riesgo
+                        </button>
+                    </div>
+                </form>
+                <div id="evaluate-status" class="mt-2 text-sm text-center hidden"></div>
+            </div>
+        </div>
+
+        <!-- Sección de resultados de evaluación -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
+                <h3 class="font-medium text-gray-800">Resultados de Evaluación</h3>
+                <div>
+                    <button id="download-results" class="bg-blue-500 text-white text-base py-1 px-3 rounded hover:bg-blue-600 transition duration-300 hidden">
+                        Descargar Resultados
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto max-h-96">
+                <table class="sticky-header min-w-full divide-y divide-gray-200" id="evaluation-results-table">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Edad</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Horas/Sem</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ausencias</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Trabajo</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Nivel de Estrés</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Riesgo Predicho</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="evaluation-results-body">
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                <div class="flex flex-col items-center justify-center py-8">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <p class="text-gray-500">Carga un archivo para ver los resultados</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

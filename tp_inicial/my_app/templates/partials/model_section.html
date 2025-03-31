@@ -1,0 +1,42 @@
+<section id="modelo" class="py-16 px-6 bg-gray-50">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Modelo de Machine Learning</h2>
+            <div class="w-20 h-1 bg-blue-500 mx-auto"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-6 mb-8">
+
+            <div class="bg-white p-6 rounded-xl shadow-md flex flex-col h-full text-center">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Entrenar y Evaluar Modelo</h3>
+                <p class="text-gray-600 mb-4 flex-grow">Entrena y evalúa el modelo con el dataset actual.</p>
+                <form action="{% url 'train_model' %}" method="post" class="flex justify-center">
+                    {% csrf_token %}
+                    <button type="submit" id="train_model" class="bg-gray-400 text-white py-2.5 px-6 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-base" disabled>
+                        Entrenar Modelo
+                    </button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="max-w-6xl mx-auto">
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Precisión del Modelo</h3>
+            <div class="bg-gray-100 p-4 rounded-lg text-center">
+                <!-- Loader (inicialmente oculto) -->
+                <div id="precision-loader" class="hidden flex justify-center items-center py-4">
+                    <svg class="animate-spin -ml-1 mr-3 h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-gray-600">Entrenando modelo...</span>
+                </div>
+                <!-- Resultado -->
+                <p id="precision-value" class="text-3xl font-bold text-blue-600">{% if precision %}{{ precision }}{% else %}-{% endif %}</p>
+                <p class="text-sm text-gray-600">Precisión del modelo entrenado.</p>
+            </div> 
+        </div>
+    </div>
+</section>

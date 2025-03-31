@@ -1,0 +1,97 @@
+<section id="dataset" class="pt-14">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Dataset de Empleados</h2>
+            <div class="w-20 h-1 bg-blue-500 mx-auto"></div>
+        </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Generar Dataset Ficticio</h3>
+                    <p class="text-gray-600 mb-4">Genera un dataset ficticio para probar el modelo.</p>
+                    <form id="generate-form">
+                        {% csrf_token %}
+                        <button type="button" id="generate-dataset" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
+                            Generar Dataset
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Cargar Dataset</h3>
+                    <p class="text-gray-600 mb-4">Sube tu propio archivo Excel o CSV con los datos de los empleados.</p>
+                    <form id="upload-form" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="file-upload" class="file-input-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            <span id="file-name" class="text-blue-600 font-medium">Seleccionar archivo</span>
+                            <span class="block text-sm text-gray-500">Formatos soportados: .xlsx, .csv</span>
+                            <input id="file-upload" name="file" type="file" accept=".xlsx,.csv" class="hidden" required>
+                        </label>
+                        <button type="submit" id="upload-button" class="w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            Cargar Dataset
+                        </button>
+                    </form>
+                </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
+                <h3 class="font-medium text-gray-800">Dataset Actual</h3>
+                <span class="text-sm text-gray-500"></span>
+            </div>
+            <div class="table-container overflow-x-auto max-h-[35rem]">
+                <table class="sticky-header min-w-full divide-y divide-gray-200" id="dataset-table">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <a href="#" class="sortable-header" data-column="0">ID</a>
+                            </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <a href="#" class="sortable-header" data-column="1">Edad</a>
+                            </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <a href="#" class="sortable-header" data-column="2">Horas/Sem</a>
+                            </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <a href="#" class="sortable-header" data-column="3">Ausencias</a>
+                            </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <a href="#" class="sortable-header" data-column="4">Nivel de Estres</a>
+                            </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <a href="#" class="sortable-header" data-column="5">Trabajo</a>
+                            </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <a href="#" class="sortable-header" data-column="6">Riesgo</a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% if dataset %}
+                            {% for item in dataset %}
+                                <tr>
+                                    <td class="px-6 py-4 text-center">{{ item.ID }}</td>
+                                    <td class="px-6 py-4 text-center">{{ item.Edad }}</td>
+                                    <td class="px-6 py-4 text-center">{{ item.Horas_Trabajadas_Por_Semana }}</td>
+                                    <td class="px-6 py-4 text-center">{{ item.Ausencias_Por_Enfermedad }}</td>
+                                    <td class="px-6 py-4 text-center">{{ item.Nivel_de_Estres }}</td>
+                                    <td class="px-6 py-4 text-center {% if item.Tipo_de_Trabajo == 'Físico' %}physical-work{% else %}office-work{% endif %}">
+                                        {{ item.Tipo_de_Trabajo }}
+                                    </td>
+                                    <td class="px-6 py-4 text-center {% if item.Riesgo == 1 %}risk-high{% else %}risk-low{% endif %}">
+                                        {% if item.Riesgo == 1 %}Alto Riesgo{% else %}Bajo Riesgo{% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="px-6 py-4 text-center text-gray-500">No hay datos disponibles. Genera un dataset.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</section>

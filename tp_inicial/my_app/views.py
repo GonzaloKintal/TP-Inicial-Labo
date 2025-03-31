@@ -34,12 +34,10 @@ def train_model(request):
     return JsonResponse({"precision": precision})
 
 
-
 def upload_dataset(request):
     if request.method != 'POST':
         return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
     
-    # Verificar si el archivo viene como 'file' (primera sección) o 'evaluate_file' (última sección)
     file_key = 'file' if 'file' in request.FILES else 'evaluate_file' if 'evaluate_file' in request.FILES else None
     
     if not file_key:
@@ -48,21 +46,23 @@ def upload_dataset(request):
     uploaded_file = request.FILES[file_key]
     file_extension = os.path.splitext(uploaded_file.name)[1].lower()
     
-    # Validar extensión del archivo
     if file_extension not in ['.xlsx', '.csv']:
         return JsonResponse({'success': False, 'error': 'Formato de archivo no soportado'}, status=400)
     
     try:
-        # Determinar el nombre del archivo según la sección
-        file_name = 'uploaded_dataset.csv' if file_key == 'file' else 'temp_dataset.csv'
+        # Usar nombres de archivo diferentes para cada sección
+        if file_key == 'file':
+            file_name = 'uploaded_dataset.csv'  # Para la sección superior
+        else:
+            file_name = 'evaluation_dataset.csv'  # Para la sección de evaluación
+            
         file_path = os.path.join(settings.BASE_DIR, 'my_app', 'dataset', file_name)
         
         if file_extension == '.xlsx':
             df = pd.read_excel(uploaded_file)
-        else:  # .csv
+        else:
             df = pd.read_csv(uploaded_file, encoding='utf-8')
         
-        # Guardar como CSV para consistencia
         df.to_csv(file_path, index=False)
         
         return JsonResponse({
@@ -71,53 +71,34 @@ def upload_dataset(request):
             'message': 'Archivo cargado correctamente'
         })
         
-    except pd.errors.EmptyDataError:
-        return JsonResponse({'success': False, 'error': 'El archivo está vacío'}, status=400)
-    except pd.errors.ParserError:
-        return JsonResponse({'success': False, 'error': 'Error al parsear el archivo'}, status=400)
-    except UnicodeDecodeError:
-        return JsonResponse({'success': False, 'error': 'Problema de codificación del archivo. Intente guardarlo como UTF-8'}, status=400)
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
-
+    
 def load_evaluation_data(request):
     if request.method != 'POST':
         return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
     
     try:
-        # Verificar si se envió un archivo (para la primera sección)
-        if 'file' in request.FILES:
-            uploaded_file = request.FILES['file']
-            file_extension = os.path.splitext(uploaded_file.name)[1].lower()
-            
-            if file_extension == '.xlsx':
-                df = pd.read_excel(uploaded_file)
-            else:  # .csv
-                df = pd.read_csv(uploaded_file, encoding='utf-8')
-            
-            # Guardar temporalmente
-            temp_path = os.path.join(settings.BASE_DIR, 'my_app', 'dataset', 'temp_dataset.csv')
-            df.to_csv(temp_path, index=False)
+        # Determinar qué archivo cargar según el tipo de petición
+        if 'evaluate_file' in request.FILES:
+            # Es una carga desde la sección de evaluación
+            file_path = os.path.join(settings.BASE_DIR, 'my_app', 'dataset', 'evaluation_dataset.csv')
         else:
-            # Usar el archivo ya cargado (para la primera sección)
-            temp_path = os.path.join(settings.BASE_DIR, 'my_app', 'dataset', 'uploaded_dataset.csv')
+            # Es una carga desde la sección superior
+            file_path = os.path.join(settings.BASE_DIR, 'my_app', 'dataset', 'uploaded_dataset.csv')
         
-        # Leer el archivo
-        df = pd.read_csv(temp_path)
+        df = pd.read_csv(file_path)
         
         # Columnas requeridas (diferentes para cada caso)
         if 'Riesgo' in df.columns:
-            # Primera sección (dataset completo)
             required_columns = ['ID', 'Edad', 'Horas_Trabajadas_Por_Semana', 
                               'Ausencias_Por_Enfermedad', 'Nivel_de_Estres', 
                               'Tipo_de_Trabajo', 'Riesgo']
         else:
-            # Última sección (datos para evaluación)
             required_columns = ['ID', 'Edad', 'Horas_Trabajadas_Por_Semana', 
                               'Ausencias_Por_Enfermedad', 'Nivel_de_Estres', 
                               'Tipo_de_Trabajo']
         
-        # Verificar columnas requeridas
         missing_columns = [col for col in required_columns if col not in df.columns]
         if missing_columns:
             return JsonResponse({

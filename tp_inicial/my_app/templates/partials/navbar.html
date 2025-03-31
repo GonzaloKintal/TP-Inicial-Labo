@@ -1,0 +1,14 @@
+{% load static %}
+<nav class="bg-blue-800 text-white shadow-lg fixed top-0 left-0 w-full z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center mb-4 md:mb-0">
+           <img src="{% static 'images/logo.svg' %}" alt="Logo" class="h-8 w-8 mr-2">
+            <h1 class="text-2xl font-bold">Sistema de Riesgo de Salud Ocupacional</h1>
+        </div>
+        <ul class="flex flex-wrap justify-center space-x-1 md:space-x-6 text-sm md:text-base">
+            <li><a href="#dataset" class="nav-link px-3 py-2 hover:text-blue-200">Dataset</a></li>
+            <li><a href="#modelo" class="nav-link px-3 py-2 hover:text-blue-200">Modelo ML</a></li>
+            <li><a href="#evaluar" class="nav-link px-3 py-2 hover:text-blue-200">Evaluar</a></li>
+        </ul>
+    </div>
+</nav>
