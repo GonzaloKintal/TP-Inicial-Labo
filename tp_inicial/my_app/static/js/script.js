@@ -475,22 +475,12 @@ loadEvaluateBtn.addEventListener('click', function(e) {
                 evaluationData = data.dataset;
                 updateEvaluationResultsTable(data.dataset, false);
                 evaluateButton.disabled = false;
-                
-                // Mostrar mensaje de éxito
-                const statusDiv = document.getElementById('evaluate-status');
-                statusDiv.textContent = 'Dataset cargado correctamente';
-                statusDiv.className = 'mt-2 text-sm text-center text-green-600';
-                statusDiv.classList.remove('hidden');
             } else {
                 throw new Error(data.error || 'Error desconocido al cargar los datos');
             }
         })
         .catch(error => {
             console.error('Error al cargar dataset:', error);
-            const statusDiv = document.getElementById('evaluate-status');
-            statusDiv.textContent = 'Error al cargar el dataset: ' + error.message;
-            statusDiv.className = 'mt-2 text-sm text-center text-red-600';
-            statusDiv.classList.remove('hidden');
         })
         .finally(() => {
             restoreButton(loadEvaluateBtn, loadEvaluateBtnOriginalText);
