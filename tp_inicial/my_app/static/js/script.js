@@ -74,6 +74,7 @@ function updateDatasetTable(dataset) {
                 <td class="px-6 py-4 text-center">${item.Edad}</td>
                 <td class="px-6 py-4 text-center">${item.Horas_Trabajadas_Por_Semana}</td>
                 <td class="px-6 py-4 text-center">${item.Ausencias_Por_Enfermedad}</td>
+                <td class="px-6 py-4 text-center">${item.Ausencias_Sin_Justificar}</td>
                 <td class="px-6 py-4 text-center">${item.Nivel_de_Estres}</td>
                 <td class="px-6 py-4 text-center ${workClass}">${item.Tipo_de_Trabajo}</td>
                 <td class="px-6 py-4 text-center ${riskClass}">${riskText}</td>
@@ -87,7 +88,7 @@ function updateDatasetTable(dataset) {
     } else {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" class="px-6 py-4 text-center text-gray-500">No hay datos disponibles. Genera un dataset.</td>
+                <td colspan="7" class="px-6 py-4 text-center text-gray-500">No hay datos disponibles. Genera un dataset.</td>
             </tr>
         `;
     }
@@ -322,6 +323,7 @@ function updateDatasetTable(dataset) {
             const age = item.Edad ?? 'N/A';
             const hours = item.Horas_Trabajadas_Por_Semana ?? 'N/A';
             const absences = item.Ausencias_Por_Enfermedad ?? 'N/A';
+            const unexcusedAbsences = item.Ausencias_Sin_Justificar ?? 'N/A';
             const stress = item.Nivel_de_Estres ?? 'N/A';
             
             // Validar tipo de trabajo
@@ -346,6 +348,7 @@ function updateDatasetTable(dataset) {
                 <td class="px-6 py-4 text-center">${age}</td>
                 <td class="px-6 py-4 text-center">${hours}</td>
                 <td class="px-6 py-4 text-center">${absences}</td>
+                <td class="px-6 py-4 text-center">${unexcusedAbsences}</td>
                 <td class="px-6 py-4 text-center">${stress}</td>
                 <td class="px-6 py-4 text-center ${workClass}">${workType}</td>
                 <td class="px-6 py-4 text-center ${riskClass}">${riskText}</td>
@@ -356,7 +359,7 @@ function updateDatasetTable(dataset) {
     } else {
         tbody.innerHTML = `
             <tr>
-                <td colspan="7" class="px-6 py-4 text-center text-gray-500">No hay datos disponibles</td>
+                <td colspan="8" class="px-6 py-4 text-center text-gray-500">No hay datos disponibles</td>
             </tr>
         `;
     }
@@ -563,8 +566,9 @@ function updateEvaluationResultsTable(results, showPredictions = false) {
                 <td class="px-6 py-4 text-center">${displayValue(item.Edad)}</td>
                 <td class="px-6 py-4 text-center">${displayValue(item.Horas_Trabajadas_Por_Semana)}</td>
                 <td class="px-6 py-4 text-center">${displayValue(item.Ausencias_Por_Enfermedad)}</td>
-                <td class="px-6 py-4 text-center ${workClass}">${item.Tipo_de_Trabajo || 'N/A'}</td>
+                <td class="px-6 py-4 text-center">${displayValue(item.Ausencias_Sin_Justificar)}</td>
                 <td class="px-6 py-4 text-center">${displayValue(item.Nivel_de_Estres)}</td>
+                <td class="px-6 py-4 text-center ${workClass}">${item.Tipo_de_Trabajo || 'N/A'}</td>
                 ${riskCell}
             `;
             
@@ -573,7 +577,7 @@ function updateEvaluationResultsTable(results, showPredictions = false) {
     } else {
         tbody.innerHTML = `
             <tr>
-                <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                <td colspan="8" class="px-6 py-4 text-center text-gray-500">
                     <div class="flex flex-col items-center justify-center py-8">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

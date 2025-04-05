@@ -92,11 +92,11 @@ def load_evaluation_data(request):
         # Columnas requeridas (diferentes para cada caso)
         if 'Riesgo' in df.columns:
             required_columns = ['ID', 'Edad', 'Horas_Trabajadas_Por_Semana', 
-                              'Ausencias_Por_Enfermedad', 'Nivel_de_Estres', 
+                              'Ausencias_Por_Enfermedad','Ausencias_Sin_Justificar', 'Nivel_de_Estres', 
                               'Tipo_de_Trabajo', 'Riesgo']
         else:
             required_columns = ['ID', 'Edad', 'Horas_Trabajadas_Por_Semana', 
-                              'Ausencias_Por_Enfermedad', 'Nivel_de_Estres', 
+                              'Ausencias_Por_Enfermedad', 'Ausencias_Sin_Justificar', 'Nivel_de_Estres', 
                               'Tipo_de_Trabajo']
         
         missing_columns = [col for col in required_columns if col not in df.columns]
@@ -132,7 +132,7 @@ def evaluate_employees(request):
         
         # Validar que el DataFrame tenga las columnas requeridas
         required_columns = ['ID', 'Edad', 'Horas_Trabajadas_Por_Semana', 
-                          'Ausencias_Por_Enfermedad', 'Nivel_de_Estres', 
+                          'Ausencias_Por_Enfermedad', 'Ausencias_Sin_Justificar', 'Nivel_de_Estres', 
                           'Tipo_de_Trabajo']
         
         missing_columns = [col for col in required_columns if col not in df.columns]

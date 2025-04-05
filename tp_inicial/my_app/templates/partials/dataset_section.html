@@ -55,16 +55,19 @@
                                 <a href="#" class="sortable-header" data-column="2">Horas/Sem</a>
                             </th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <a href="#" class="sortable-header" data-column="3">Ausencias</a>
+                                <a href="#" class="sortable-header" data-column="3">Ausencias por enfermedad</a>
                             </th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <a href="#" class="sortable-header" data-column="4">Nivel de Estres</a>
+                                <a href="#" class="sortable-header" data-column="4">Ausencias sin justificar</a>
                             </th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <a href="#" class="sortable-header" data-column="5">Trabajo</a>
+                                <a href="#" class="sortable-header" data-column="5">Nivel de Estres</a>
                             </th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <a href="#" class="sortable-header" data-column="6">Riesgo</a>
+                                <a href="#" class="sortable-header" data-column="6">Trabajo</a>
+                            </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <a href="#" class="sortable-header" data-column="7">Riesgo</a>
                             </th>
                         </tr>
                     </thead>
@@ -76,6 +79,7 @@
                                     <td class="px-6 py-4 text-center">{{ item.Edad }}</td>
                                     <td class="px-6 py-4 text-center">{{ item.Horas_Trabajadas_Por_Semana }}</td>
                                     <td class="px-6 py-4 text-center">{{ item.Ausencias_Por_Enfermedad }}</td>
+                                    <td class="px-6 py-4 text-center">{{ item.Ausencias_Sin_Justificar }}</td>
                                     <td class="px-6 py-4 text-center">{{ item.Nivel_de_Estres }}</td>
                                     <td class="px-6 py-4 text-center {% if item.Tipo_de_Trabajo == 'Físico' %}physical-work{% else %}office-work{% endif %}">
                                         {{ item.Tipo_de_Trabajo }}
@@ -87,7 +91,7 @@
                             {% endfor %}
                         {% else %}
                             <tr>
-                                <td colspan="7" class="px-6 py-4 text-center text-gray-500">No hay datos disponibles. Genera un dataset.</td>
+                                <td colspan="8" class="px-6 py-4 text-center text-gray-500">No hay datos disponibles. Genera un dataset.</td>
                             </tr>
                         {% endif %}
                     </tbody>

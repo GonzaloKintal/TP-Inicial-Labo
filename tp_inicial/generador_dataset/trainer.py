@@ -8,9 +8,17 @@ import joblib
 import os
 
 
+def create_and_save_model():
+
+    model = LogisticRegression()
+    model_path = os.path.join(settings.BASE_DIR, 'my_app', 'models', 'regression_model.pkl')
+    joblib.dump(model, model_path)
+
 def training_model(df):
+
+    create_and_save_model()
     # Separamos datos en variables independientes (X) y objetivo (y)
-    X = df[["Horas_Trabajadas_Por_Semana", "Ausencias_Por_Enfermedad", 
+    X = df[["Horas_Trabajadas_Por_Semana", "Ausencias_Por_Enfermedad", "Ausencias_Sin_Justificar",
             "Nivel_de_Estres", "Edad", "Tipo_de_Trabajo"]]
     y = df["Riesgo"]
 
@@ -28,9 +36,11 @@ def training_model(df):
     )
 
     # Entrenamos el modelo de regresión logística
-    model = LogisticRegression()
-    model.fit(X_train, y_train)
+    model_path = os.path.join(settings.BASE_DIR, 'my_app', 'models', 'regression_model.pkl')
+    model = joblib.load(model_path)
 
+
+    model.fit(X_train, y_train)
     # Hacemos las predicciones
     y_pred = model.predict(X_test)
 
@@ -43,7 +53,7 @@ def training_model(df):
     os.makedirs(model_dir, exist_ok=True)  # Crea la carpeta si no existe
     
     # Guardar el modelo
-    model_path = os.path.join(model_dir, 'modelo_entrenado.pkl')
+    model_path = os.path.join(model_dir, 'regression_model.pkl')
     joblib.dump(model, model_path)
     
     # Guardar el encoder
@@ -70,7 +80,7 @@ def load_trained_model():
     model_dir = os.path.join(settings.BASE_DIR, 'my_app', 'models')
     
     try:
-        model_path = os.path.join(model_dir, 'modelo_entrenado.pkl')
+        model_path = os.path.join(model_dir, 'regression_model.pkl')
         encoder_path = os.path.join(model_dir, 'label_encoder.pkl')
         scaler_path = os.path.join(model_dir, 'standard_scaler.pkl')
         
@@ -90,7 +100,7 @@ def load_trained_model():
 def predict_risk(data, model, encoder, scaler):
     """Realiza predicciones con el modelo entrenado"""
     # Hacer una copia para no modificar el dataframe original
-    X = data[["Horas_Trabajadas_Por_Semana", "Ausencias_Por_Enfermedad", 
+    X = data[["Horas_Trabajadas_Por_Semana", "Ausencias_Por_Enfermedad", "Ausencias_Sin_Justificar",
               "Nivel_de_Estres", "Edad", "Tipo_de_Trabajo"]].copy()
     
     # Codificar variable categórica
