@@ -8,15 +8,19 @@ import joblib
 import os
 
 
-def create_and_save_model():
-
-    model = LogisticRegression()
+def get_or_create_model():
     model_path = os.path.join(settings.BASE_DIR, 'my_app', 'models', 'regression_model.pkl')
-    joblib.dump(model, model_path)
+    if os.path.exists(model_path):
+        model= joblib.load(model_path)
+    else:
+        model = LogisticRegression()
+        joblib.dump(model, model_path)
+
+    return model
 
 def training_model(df):
 
-    create_and_save_model()
+    model= get_or_create_model()
     # Separamos datos en variables independientes (X) y objetivo (y)
     X = df[["Horas_Trabajadas_Por_Semana", "Ausencias_Por_Enfermedad", "Ausencias_Sin_Justificar",
             "Nivel_de_Estres", "Edad", "Tipo_de_Trabajo"]]
@@ -34,10 +38,6 @@ def training_model(df):
     X_train, X_test, y_train, y_test = train_test_split(
         X_scaled, y, test_size=0.2, random_state=42
     )
-
-    # Entrenamos el modelo de regresión logística
-    model_path = os.path.join(settings.BASE_DIR, 'my_app', 'models', 'regression_model.pkl')
-    model = joblib.load(model_path)
 
 
     model.fit(X_train, y_train)
