@@ -102,3 +102,43 @@ margin: 0 auto 1rem;
 0% { transform: rotate(0deg); }
 100% { transform: rotate(360deg); }
 }
+
+
+.canvas-container {
+    min-height: 250px;
+    max-height: 300px;
+}
+
+#riskStats p {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+#riskStats p:nth-child(2) {
+    background-color: rgba(254, 226, 226, 0.3);
+}
+
+#riskStats p:nth-child(3) {
+    background-color: rgba(220, 252, 231, 0.3);
+}
+
+/* Asegura que el canvas ocupe todo el espacio disponible */
+#riskChart {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+/* Previene desplazamientos no deseados */
+#charts-container {
+    overflow: visible;
+}
+
+/* Estilo para el contenedor del gráfico */
+.relative > div {
+    position: absolute;
+    top: 200px; /* Ajusta según el tamaño de tu título */
+    bottom: 0;
+    left: 0;
+    right: 0;
+}

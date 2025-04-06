@@ -74,6 +74,22 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+            <div id="charts-container" class="hidden mt-8 bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Contenedor del gráfico con dimensiones fijas -->
+                    <div class="relative" style="height: 300px;">
+                        <h4 class="text-lg font-medium mb-4">Distribución de Riesgos</h4>
+                        <div class="absolute inset-0 mt-8">
+                            <canvas id="riskChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Estadísticas -->
+                    <div>
+                        <h4 class="text-lg font-medium mb-4">Estadísticas</h4>
+                        <div id="riskStats" class="space-y-4"></div>
+                    </div>
+                </div>
+            </div>   
     </div>
 </section>

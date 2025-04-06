@@ -1,3 +1,4 @@
+
 // Desactivar el botón de entrenar modelo inicialmente
 const trainModelBtn = document.getElementById('train_model');
 trainModelBtn.disabled = true;
@@ -490,9 +491,9 @@ loadEvaluateBtn.addEventListener('click', function(e) {
         });
     }, 2000);
 });
-    
-    // Manejar envío del formulario de evaluación
-    evaluateForm.addEventListener('submit', function(e) {
+
+// Manejar envío del formulario de evaluación
+evaluateForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
         if (!evaluationData) {
@@ -521,7 +522,12 @@ loadEvaluateBtn.addEventListener('click', function(e) {
             .then(data => {
                 if (data.success) {
                     downloadResultsBtn.classList.remove('hidden');
+
                     updateEvaluationResultsTable(data.results, true);
+                    
+               //     console.log("Datos para gráficos:", data.results);
+                    showEvaluationCharts(data.results);
+
                     downloadResultsBtn.onclick = function() {
                         downloadEvaluationResults(data.results);
                     };
@@ -613,4 +619,82 @@ function downloadEvaluationResults(results) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+}
+
+function showEvaluationCharts(results) {
+    if (!results || results.length === 0) return;
+
+    const chartsContainer = document.getElementById('charts-container');
+    if (!chartsContainer) return;
+
+    // Mostrar contenedor
+    chartsContainer.classList.remove('hidden');
+    
+    // Limpiar canvas existente
+    const existingCanvas = document.getElementById('riskChart');
+    if (existingCanvas) existingCanvas.remove();
+    
+    // Crear nuevo canvas
+    const canvasContainer = chartsContainer.querySelector('.relative');
+    const newCanvas = document.createElement('canvas');
+    newCanvas.id = 'riskChart';
+    canvasContainer.querySelector('div').appendChild(newCanvas);
+    
+    // Calcular datos
+    const total = results.length;
+    const highRisk = results.filter(emp => emp.Riesgo_Predicho === 1).length;
+    const lowRisk = total - highRisk;
+
+    // Configuración del gráfico
+    const ctx = newCanvas.getContext('2d');
+    
+    // Destruir instancia anterior
+    if (window.riskChartInstance) {
+        window.riskChartInstance.destroy();
+    }
+
+    window.riskChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Bajo riesgo', 'Alto riesgo'],
+            datasets: [{
+                data: [lowRisk, highRisk],
+                backgroundColor: ['#86efac', '#fca5a5'],
+                borderColor: ['#16a34a', '#dc2626'],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '65%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 20
+                    }
+                }
+            }
+        }
+    });
+
+    // Actualizar estadísticas
+    document.getElementById('riskStats').innerHTML = `
+        <div class="p-4 bg-gray-50 rounded-lg">
+            <div class="flex justify-between py-2 border-b">
+                <span class="font-medium">Total evaluados:</span>
+                <span class="font-semibold">${total}</span>
+            </div>
+            <div class="flex justify-between py-2 border-b text-red-600">
+                <span class="font-medium">Alto riesgo:</span>
+                <span class="font-semibold">${highRisk} (${((highRisk/total)*100).toFixed(1)}%)</span>
+            </div>
+            <div class="flex justify-between py-2 text-green-600">
+                <span class="font-medium">Bajo riesgo:</span>
+                <span class="font-semibold">${lowRisk} (${((lowRisk/total)*100).toFixed(1)}%)</span>
+            </div>
+        </div>
+    `;
 }
