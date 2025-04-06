@@ -1,0 +1,220 @@
+{% load static %}
+
+<section id="evaluar-individual" class="pb-24 px-6">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Evaluar Empleado Individual</h2>
+            <div class="w-20 h-1 bg-blue-500 mx-auto"></div>
+        </div>
+
+        <!-- Formulario para evaluar empleado individual -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+            <div class="p-4 bg-gray-50 border-b">
+                <h3 class="font-medium text-gray-800">Ingresar Datos del Empleado</h3>
+                <p class="text-sm text-gray-500 mt-1">Completa los campos para evaluar el riesgo de un empleado</p>
+            </div>
+            <div class="p-6">
+                <form id="evaluate-employee-form">
+                    {% csrf_token %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Edad -->
+                        <div>
+                            <label for="Edad" class="block text-sm font-medium text-gray-700 mb-1">Edad</label>
+                            <input type="number" id="Edad" name="Edad" min="18" max="70" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
+                                   required>
+                        </div>
+                        
+                        <!-- Horas trabajadas por semana -->
+                        <div>
+                            <label for="Horas_Trabajadas" class="block text-sm font-medium text-gray-700 mb-1">Horas trabajadas por semana</label>
+                            <input type="number" id="Horas_Trabajadas" name="Horas_Trabajadas" min="10" max="80" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
+                                   required>
+                        </div>
+                        
+                        <!-- Ausencias por enfermedad -->
+                        <div>
+                            <label for="Ausencias_Por_Enfermedad" class="block text-sm font-medium text-gray-700 mb-1">Ausencias por enfermedad</label>
+                            <input type="number" id="Ausencias_Por_Enfermedad" name="Ausencias_Por_Enfermedad" min="0" max="30" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
+                                   required>
+                        </div>
+                        
+                        <!-- Ausencias sin justificar -->
+                        <div>
+                            <label for="Ausencias_Sin_Justificar" class="block text-sm font-medium text-gray-700 mb-1">Ausencias sin justificar</label>
+                            <input type="number" id="Ausencias_Sin_Justificar" name="Ausencias_Sin_Justificar" min="0" max="30" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
+                                   required>
+                        </div>
+                        
+                        <!-- Nivel de estrés -->
+                        <div>
+                            <label for="Nivel_De_Estres" class="block text-sm font-medium text-gray-700 mb-1">Nivel de estrés (1-10)</label>
+                            <select id="Nivel_De_Estres" name="Nivel_De_Estres" 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
+                                    required>
+                                <option value="">Seleccionar</option>
+                                <option value="1">1 - Muy bajo</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5 - Moderado</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10 - Muy alto</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Tipo de trabajo -->
+                        <div>
+                            <label for="Tipo_de_Trabajo" class="block text-sm font-medium text-gray-700 mb-1">Tipo de trabajo</label>
+                            <select id="Tipo_de_Trabajo" name="Tipo_de_Trabajo" 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" 
+                                    required>
+                                <option value="">Seleccionar</option>
+                                <option value="Oficina">Oficina</option>
+                                <option value="Físico">Físico</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <button type="submit" id="evaluate-employee-button" 
+                                class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition duration-300">
+                            Evaluar Riesgo del Empleado
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Resultado de la evaluación -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hidden" id="employee-result-container">
+            <div class="p-4 bg-gray-50 border-b">
+                <h3 class="font-medium text-gray-800">Resultado de la Evaluación</h3>
+            </div>
+            <div class="p-6">
+                <div id="employee-risk-result" class="text-center">
+                    <div id="risk-indicator" class="inline-block p-4 rounded-full mb-4">
+                        <!-- Icono dinámico según el riesgo -->
+                    </div>
+                    <h4 id="risk-level" class="text-2xl font-bold mb-2"></h4>
+                    <p id="risk-description" class="text-gray-600"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('evaluate-employee-form');
+    const resultContainer = document.getElementById('employee-result-container');
+    const riskLevel = document.getElementById('risk-level');
+    const riskDescription = document.getElementById('risk-description');
+    const riskIndicator = document.getElementById('risk-indicator');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Mostrar loader en el botón
+        const button = document.getElementById('evaluate-employee-button');
+        button.disabled = true;
+        button.innerHTML = `
+            <span class="flex items-center justify-center"><svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Calculando riesgo...</span>
+        `;
+
+        // Obtener datos del formulario
+        const formData = {
+            'dataset': [{
+                'Edad': form.Edad.value,
+                'Horas_Trabajadas_Por_Semana': document.getElementById('Horas_Trabajadas').value,
+                'Ausencias_Por_Enfermedad': form.Ausencias_Por_Enfermedad.value,
+                'Ausencias_Sin_Justificar': form.Ausencias_Sin_Justificar.value,
+                'Nivel_de_Estres': document.getElementById('Nivel_De_Estres').value,
+                'Tipo_de_Trabajo': form.Tipo_de_Trabajo.value
+            }]
+        };
+
+        // Definir un tiempo mínimo de carga de 2 segundos
+        const minimumLoadTime = new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Enviar datos al servidor y esperar al menos 2 segundos
+        Promise.all([
+            fetch(DJANGO_CONFIG.evaluateEmployeesUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': DJANGO_CONFIG.csrfToken
+                },
+                body: JSON.stringify(formData)
+            }),
+            minimumLoadTime
+        ])
+        .then(([response]) => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                let result = data.results[0].Riesgo_Predicho;
+                let isHighRisk = result === 1;
+                
+                if (result === 0) {
+                    result = 'Bajo';
+                } else {
+                    result = 'Alto';
+                }
+
+                // Mostrar resultado
+                riskLevel.textContent = `Riesgo ${result}`;
+                riskDescription.textContent = isHighRisk 
+                    ? 'Este empleado muestra señales de alto riesgo. Se recomienda tomar medidas preventivas.'
+                    : 'Este empleado tiene bajo riesgo de salud.';
+                
+                // Estilizar según el riesgo
+                if (isHighRisk) {
+                    riskIndicator.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    `;
+                    riskLevel.classList.remove('text-green-600');
+                    riskLevel.classList.add('text-red-600');
+                    riskIndicator.classList.remove('bg-green-100');
+                    riskIndicator.classList.add('bg-red-100');
+                } else {
+                    riskIndicator.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                    `;
+                    riskLevel.classList.remove('text-red-600');
+                    riskLevel.classList.add('text-green-600');
+                    riskIndicator.classList.remove('bg-red-100');
+                    riskIndicator.classList.add('bg-green-100');
+                }
+                
+                resultContainer.classList.remove('hidden');
+            } else {
+                alert('Error: ' + (data.error || 'No se pudo evaluar el empleado'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ocurrió un error al evaluar el empleado');
+        })
+        .finally(() => {
+            // Restaurar el botón
+            button.disabled = false;
+            button.textContent = 'Evaluar Riesgo del Empleado';
+        });
+    });
+});
+</script>

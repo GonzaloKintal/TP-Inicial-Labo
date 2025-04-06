@@ -6,6 +6,7 @@ from django.conf import settings
 import pandas as pd
 from django.http import JsonResponse
 import json
+from generador_dataset.trainer import load_trained_model, predict_risk
 
 def home(request):
     return render(request, "home.html")
@@ -35,9 +36,6 @@ def train_model(request):
 
 
 def upload_dataset(request):
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
-    
     file_key = 'file' if 'file' in request.FILES else 'evaluate_file' if 'evaluate_file' in request.FILES else None
     
     if not file_key:
@@ -75,9 +73,6 @@ def upload_dataset(request):
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
     
 def load_evaluation_data(request):
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
-    
     try:
         # Determinar qué archivo cargar según el tipo de petición
         if 'evaluate_file' in request.FILES:
@@ -116,9 +111,6 @@ def load_evaluation_data(request):
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 def evaluate_employees(request):
-    if request.method != 'POST':
-        return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
-    
     try:
         # Obtener datos del cuerpo JSON
         data = json.loads(request.body)
@@ -131,7 +123,7 @@ def evaluate_employees(request):
         df = pd.DataFrame(dataset)
         
         # Validar que el DataFrame tenga las columnas requeridas
-        required_columns = ['ID', 'Edad', 'Horas_Trabajadas_Por_Semana', 
+        required_columns = ['Edad', 'Horas_Trabajadas_Por_Semana', 
                           'Ausencias_Por_Enfermedad', 'Ausencias_Sin_Justificar', 'Nivel_de_Estres', 
                           'Tipo_de_Trabajo']
         
@@ -142,17 +134,11 @@ def evaluate_employees(request):
                 'error': f'Faltan columnas requeridas: {", ".join(missing_columns)}'
             }, status=400)
         
-        # Resto del código para cargar el modelo y predecir...
-        from generador_dataset.trainer import load_trained_model, predict_risk
-        model, encoder, scaler = load_trained_model()
+        # Agregar ID temporal si no existe
+        if 'ID' not in df.columns:
+            df['ID'] = range(1, len(df)+1)
         
-        if model is None:
-            return JsonResponse({
-                'success': False,
-                'error': 'El modelo no ha sido entrenado aún. Entrena el modelo primero.'
-            }, status=400)
-        
-        predictions = predict_risk(df, model, encoder, scaler)
+        predictions = predict_risk(df)
         
         results_df = df.copy()
         results_df['Riesgo_Predicho'] = predictions

@@ -97,8 +97,10 @@ def load_trained_model():
         print(f"Error al cargar el modelo: {str(e)}")
         return None, None, None
     
-def predict_risk(data, model, encoder, scaler):
+def predict_risk(data):
     """Realiza predicciones con el modelo entrenado"""
+    model, encoder, scaler = load_trained_model()
+
     # Hacer una copia para no modificar el dataframe original
     X = data[["Horas_Trabajadas_Por_Semana", "Ausencias_Por_Enfermedad", "Ausencias_Sin_Justificar",
               "Nivel_de_Estres", "Edad", "Tipo_de_Trabajo"]].copy()

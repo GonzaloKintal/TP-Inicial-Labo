@@ -15,7 +15,8 @@
         
         {% include 'partials/dataset_section.html' %}
         {% include 'partials/model_section.html' %}
-        {% include 'partials/evaluate_section.html' %}
+        {% include 'partials/evaluate_section.html' %}s
+        {% include 'partials/evaluate_employee.html' %}
         
     </div>
 
@@ -27,6 +28,7 @@
     const DJANGO_CONFIG = {
         generateDatasetUrl: "{% url 'generate_dataset' %}",
         trainModelUrl: "{% url 'train_model' %}",
+        evaluateEmployeesUrl: "{% url 'evaluate_employees' %}",
         csrfToken: "{{ csrf_token }}"
     };
 </script>
