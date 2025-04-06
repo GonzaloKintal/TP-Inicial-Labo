@@ -8,3 +8,9 @@
    venv\Scripts\activate     (En Windows)
    
 3. pip install -r requirements.txt
+
+## Pasos para ejecutar el proyecto:
+
+1. Pararse en el directorio: TP-Inicial-Labo/tp_inicial
+
+2. Ejecutar: python manage.py runserver
