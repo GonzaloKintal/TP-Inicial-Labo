@@ -82,10 +82,14 @@
                         </div>
                     </div>
                     
-                    <div class="mt-6">
+                    <div class="grid grid-cols-2 gap-4 mt-10">
                         <button type="submit" id="evaluate-employee-button" 
                                 class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition duration-300">
                             Evaluar Riesgo del Empleado
+                        </button>
+                        <button type="button" id="clear-form-button"
+                                class="w-full bg-gray-200 text-gray-800 py-3 px-4 rounded-lg hover:bg-gray-300 transition duration-300">
+                            Limpiar formulario
                         </button>
                     </div>
                 </form>
@@ -215,6 +219,15 @@ document.addEventListener('DOMContentLoaded', function() {
             button.disabled = false;
             button.textContent = 'Evaluar Riesgo del Empleado';
         });
+    });
+    // Agrega esto dentro del event listener DOMContentLoaded, después de las otras declaraciones
+    const clearFormButton = document.getElementById('clear-form-button');
+
+    clearFormButton.addEventListener('click', function() {
+        form.reset(); // Esto restablece todos los campos del formulario
+        
+        // También puedes ocultar el resultado si está visible
+        resultContainer.classList.add('hidden');
     });
 });
 </script>
