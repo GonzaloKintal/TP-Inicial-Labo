@@ -1,7 +1,7 @@
 ID,Horas_Trabajadas_Por_Semana,Ausencias_Por_Enfermedad,Nivel_de_Estres,Edad,Tipo_de_Trabajo,Ausencias_Sin_Justificar
 1,40,0,1,58,Oficina,1
 2,33,1,4,35,Físico,5
-3,35,0,8,26,Oficina,6
+3,35,6,8,26,Oficina,6
 4,46,0,2,29,Oficina,8
 5,41,2,3,33,Físico,7
 6,30,3,2,61,Oficina,2

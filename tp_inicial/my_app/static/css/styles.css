@@ -107,6 +107,8 @@ margin: 0 auto 1rem;
 .canvas-container {
     min-height: 250px;
     max-height: 300px;
+    height: 300px;
+    position: relative;
 }
 
 #riskStats p {
@@ -137,7 +139,7 @@ margin: 0 auto 1rem;
 /* Estilo para el contenedor del gráfico */
 .relative > div {
     position: absolute;
-    top: 200px; /* Ajusta según el tamaño de tu título */
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
