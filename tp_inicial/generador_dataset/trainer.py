@@ -8,6 +8,7 @@ import joblib
 import os
 
 
+# Método para obtener el modelo o crearlo si no existe
 def get_or_create_model():
     model_path = os.path.join(settings.BASE_DIR, 'my_app', 'models', 'regression_model.pkl')
     if os.path.exists(model_path):
@@ -18,6 +19,7 @@ def get_or_create_model():
 
     return model
 
+# Método para entrenar el modelo
 def training_model(df):
 
     model= get_or_create_model()
@@ -75,6 +77,7 @@ def training_model(df):
 
     return precision * 100
 
+# Método para cargar el modelo entrenado y los transformadores
 def load_trained_model():
     """Carga el modelo entrenado y los transformadores desde archivos"""
     model_dir = os.path.join(settings.BASE_DIR, 'my_app', 'models')
@@ -97,6 +100,7 @@ def load_trained_model():
         print(f"Error al cargar el modelo: {str(e)}")
         return None, None, None
     
+# Método para predecir el riesgo
 def predict_risk(data):
     """Realiza predicciones con el modelo entrenado"""
     model, encoder, scaler = load_trained_model()

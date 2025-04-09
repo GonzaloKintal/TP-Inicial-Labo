@@ -5,11 +5,10 @@ import pandas as pd
 from django.conf import settings
 import random
 
-
+# Método para asignar el riesgo
 def assign_risk(horas, ausencias_enfermedad, ausencias_sin_justificar, nivel_estres):
     tasa_enfermedad = (ausencias_enfermedad / horas) * 100 if horas > 0 else 0
     tasa_sin_justificar = (ausencias_sin_justificar / horas) * 100 if horas > 0 else 0
-    
 
     estres_rel = min(nivel_estres / 10, 1)
     
@@ -17,6 +16,7 @@ def assign_risk(horas, ausencias_enfermedad, ausencias_sin_justificar, nivel_est
     
     return "Alto Riesgo" if score > 8 else "Bajo Riesgo"
 
+# Método para generar el dataset
 def generate_dataset(seed=50, nro_empleados=500):
     np.random.seed(random.randint(1, 100))
 

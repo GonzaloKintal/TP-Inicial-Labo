@@ -12,6 +12,7 @@ def home(request):
     return render(request, "home.html")
 
 
+# Método para generar el dataset
 def generate(request):
     df = generate_dataset()
     df_records = df.to_dict(orient='records')
@@ -27,6 +28,7 @@ def generate(request):
     })
 
 
+# Método para entrenar el modelo
 def train_model(request):
     file_path = os.path.join(settings.BASE_DIR, 'my_app', 'dataset', 'dataset_empleados.csv')
     df = pd.read_csv(file_path)
@@ -35,6 +37,7 @@ def train_model(request):
     return JsonResponse({"precision": precision})
 
 
+# Método para cargar el dataset de evaluación
 def upload_dataset(request):
     file_key = 'file' if 'file' in request.FILES else 'evaluate_file' if 'evaluate_file' in request.FILES else None
     
@@ -71,7 +74,8 @@ def upload_dataset(request):
         
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
-    
+
+# Método para cargar el dataset de evaluación en la tabla
 def load_evaluation_data(request):
     try:
         # Determinar qué archivo cargar según el tipo de petición
@@ -110,6 +114,7 @@ def load_evaluation_data(request):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
+# Método para evaluar los empleados dado un dataset
 def evaluate_employees(request):
     try:
         # Obtener datos del cuerpo JSON
